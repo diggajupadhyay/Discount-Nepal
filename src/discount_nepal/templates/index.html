@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Discount Nepal</title>
+<meta name="description" content="Live prices on discounted outdoor, trekking & streetwear gear from Nepali online stores.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Discount Nepal">
+<meta property="og:title" content="Discount Nepal — discounted gear from Nepali stores">
+<meta property="og:description" content="Compare live prices on discounted outdoor, trekking & streetwear gear from Nepali online stores.">
+<meta property="og:url" content="https://diggajupadhyay.github.io/Discount-Nepal/">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%232563eb'/%3E%3Ctext x='16' y='22' font-family='sans-serif' font-size='17' font-weight='bold' fill='%23fff' text-anchor='middle'%3E25%3C/text%3E%3C/svg%3E">
+<style>
+:root{--bg:#f6f7f9;--card:#fff;--text:#111827;--muted:#6b7280;--accent:#2563eb;--border:#e5e7eb;--danger:#b91c1c;--success:#15803d;--shadow:0 4px 12px rgba(0,0,0,.06)}
+*{box-sizing:border-box}
+body{margin:0;font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;background:var(--bg);color:var(--text);line-height:1.5}
+header{max-width:1200px;margin:0 auto;padding:24px 20px 12px}
+h1{margin:0 0 6px;font-size:28px;letter-spacing:-.02em}
+.subtitle{color:var(--muted);font-size:15px;margin:0 0 16px}
+.meta{color:var(--muted);font-size:13px;margin-bottom:12px}
+
+/* Filter bar */
+.filters{max-width:1200px;margin:0 auto 18px;padding:0 20px;display:flex;flex-wrap:wrap;gap:10px;align-items:end}
+.filter-group{display:flex;flex-direction:column;gap:6px;min-width:150px}
+.filter-group label{font-size:12px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.03em}
+input,select{padding:10px 12px;border-radius:8px;font-size:14px;border:1px solid var(--border);background:#fff;width:100%}
+input:focus,select:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px rgba(37,99,235,.15)}
+button{padding:10px 16px;border-radius:8px;font-size:14px;border:1px solid var(--border);background:#fff;color:var(--text);cursor:pointer;font-weight:500}
+button.primary{background:var(--accent);color:#fff;border-color:var(--accent)}
+button:disabled{opacity:.6;cursor:not-allowed}
+button.loading{position:relative;color:transparent}
+button.loading::after{content:"";position:absolute;inset:50%;transform:translate(-50%,-50%);width:16px;height:16px;border:2px solid #fff;border-radius:50%;border-top-color:transparent;animation:spin 0.8s linear infinite}
+@keyframes spin{to{transform:translate(-50%,-50%) rotate(360deg)}}
+button.small{padding:6px 10px;font-size:13px}
+
+/* Grid */
+.grid{max-width:1200px;margin:0 auto;padding:16px 20px 40px;display:grid;gap:16px;grid-template-columns:repeat(auto-fill,minmax(250px,1fr))}
+.card{background:var(--card);border:1px solid var(--border);border-radius:12px;overflow:hidden;display:flex;flex-direction:column;transition:transform .15s,box-shadow .15s}
+.card:hover{transform:translateY(-3px);box-shadow:var(--shadow)}
+.card-img{width:100%;height:200px;object-fit:cover;background:#ececec;display:block}
+.card-body{padding:14px;display:flex;flex-direction:column;gap:8px;flex:1}
+.store-tag{font-size:11px;font-weight:800;color:var(--accent);text-transform:uppercase;letter-spacing:.04em}
+.title{font-weight:700;font-size:15px;line-height:1.35;color:var(--text);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.price-row{margin-top:auto;display:flex;align-items:baseline;gap:6px;flex-wrap:wrap}
+.sale{font-size:17px;font-weight:800;color:var(--danger)}
+.was{font-size:13px;color:var(--muted);text-decoration:line-through}
+.badge{display:inline-flex;align-items:center;background:#fee2e2;color:var(--danger);border-radius:999px;padding:3px 9px;font-size:11.5px;font-weight:800}
+a.view{color:var(--accent);text-decoration:none;font-size:13px;font-weight:700;margin-top:auto}
+a.view:hover{text-decoration:underline}
+
+/* Load more */
+.load-more-wrap{max-width:1200px;margin:12px auto 20px;padding:0 20px;text-align:center}
+
+/* Skeletons */
+.skeleton-card{height:320px;background:#eef0f3;border-radius:12px;overflow:hidden;display:flex;flex-direction:column}
+.skeleton-img{height:200px;background:#e5e7eb}
+.skeleton-body{padding:14px;display:flex;flex-direction:column;gap:8px;flex:1}
+.skeleton-line{height:14px;background:#e5e7eb;border-radius:4px}
+.skeleton-line.short{width:60%;height:11px}
+
+/* Empty / status */
+.empty{grid-column:1/-1;text-align:center;padding:60px 20px;color:var(--muted)}
+.empty h2{margin:0 0 8px;color:var(--text)}
+.status{padding:0 20px 8px;color:var(--muted);font-size:14px}
+.count{color:var(--muted);font-size:13px;font-weight:500;padding:0 20px 12px}
+
+/* Toast */
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#111;color:#fff;padding:10px 16px;border-radius:8px;font-size:14px;opacity:0;transition:opacity .3s;pointer-events:none;z-index:50}
+.toast.show{opacity:1}
+
+/* Footer */
+footer{max-width:1200px;margin:0 auto;padding:24px 20px 40px;border-top:1px solid var(--border);color:var(--muted);font-size:13px;line-height:1.6}
+footer a{color:var(--accent);text-decoration:none}
+footer a:hover{text-decoration:underline}
+
+/* Responsive */
+@media (max-width:640px){
+  header{padding:16px 16px 8px}
+  .filters{padding:0 16px}
+  .grid{padding:12px 16px 32px}
+  .status,.count,.load-more-wrap{padding:0 16px}
+}
+</style>
+</head>
+<body>
+<header>
+  <h1>Discount Nepal</h1>
+  <p class="subtitle">Live prices on discounted outdoor, trekking &amp; streetwear gear from Nepali stores.</p>
+  <div class="meta" id="meta">Loading latest products…</div>
+</header>
+
+<div class="filters" id="filters">
+  <div class="filter-group">
+    <label for="search">Search</label>
+    <input id="search" type="search" placeholder="e.g. jacket, shoes, hoodie…">
+  </div>
+  <div class="filter-group">
+    <label for="site">Store</label>
+    <select id="site"><option value="">All stores</option></select>
+  </div>
+  <div class="filter-group">
+    <label for="discount">Min discount</label>
+    <select id="discount">
+      <option value="">Any</option>
+      <option value="10">10%+ off</option>
+      <option value="20">20%+ off</option>
+      <option value="30">30%+ off</option>
+      <option value="50">50%+ off</option>
+    </select>
+  </div>
+  <div class="filter-group">
+    <label for="maxPrice">Max price (रू)</label>
+    <input id="maxPrice" type="number" placeholder="e.g. 3000">
+  </div>
+  <div class="filter-group" style="min-width:170px">
+    <label for="sort">Sort by</label>
+    <select id="sort">
+      <option value="featured">Featured</option>
+      <option value="discount">Discount % (high &rarr; low)</option>
+      <option value="price-asc">Price (low &rarr; high)</option>
+      <option value="price-desc">Price (high &rarr; low)</option>
+      <option value="newest">Newest first</option>
+    </select>
+  </div>
+  <button class="primary small" id="refresh" title="Reload the latest scraped data">&#8635; Refresh</button>
+</div>
+
+<div class="status" id="status"></div>
+<div class="count" id="count"></div>
+
+<main class="grid" id="grid"></main>
+
+<div class="load-more-wrap" id="loadMoreWrap" style="display:none">
+  <button id="loadMore">Load more products</button>
+</div>
+<div id="sentinel"></div>
+
+<div class="toast" id="toast"></div>
+
+<footer>
+  <p>Prices and availability are as observed at scrape time and may differ from the live
+  store — always verify on the retailer's site before purchasing. This project is not
+  affiliated with any listed store.</p>
+  <p>Open source under the <a href="https://github.com/diggajupadhyay/Discount-Nepal/blob/main/LICENSE">MIT license</a>
+  &middot; <a href="https://github.com/diggajupadhyay/Discount-Nepal">Source on GitHub</a>
+  &middot; Data refreshed every 6 hours.</p>
+</footer>
+
+<script>
+// Relative path so the same build works on the local server (which serves
+// /products.json) and on static hosting under a subpath (GitHub Pages).
+const API = "products.json";
+const PAGE_SIZE = 24;
+
+// Inline SVG placeholder — no external service dependency.
+const NO_IMAGE = "data:image/svg+xml," + encodeURIComponent(
+  '<svg xmlns="http://www.w3.org/2000/svg" width="300" height="200">' +
+  '<rect width="300" height="200" fill="#e5e7eb"/>' +
+  '<text x="150" y="105" font-family="system-ui,sans-serif" font-size="14" ' +
+  'fill="#9ca3af" text-anchor="middle">No image</text></svg>'
+);
+
+let products = [];
+let filtered = [];
+let page = 0;
+let isLoading = false;
+let loadMoreScheduled = false;
+
+const grid = document.getElementById("grid");
+const statusEl = document.getElementById("status");
+const metaEl = document.getElementById("meta");
+const countEl = document.getElementById("count");
+const search = document.getElementById("search");
+const site = document.getElementById("site");
+const discountSel = document.getElementById("discount");
+const maxPrice = document.getElementById("maxPrice");
+const sortSel = document.getElementById("sort");
+const refreshBtn = document.getElementById("refresh");
+const loadMoreBtn = document.getElementById("loadMore");
+const loadMoreWrap = document.getElementById("loadMoreWrap");
+const sentinel = document.getElementById("sentinel");
+const toastEl = document.getElementById("toast");
+
+function esc(v){return String(v ?? "").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
+function safeUrl(v){const s=String(v||"").trim();return /^https?:\/\//i.test(s)?s:""}
+function priceNum(v){const m=String(v||"").replace(/,/g,"").match(/\d+(\.\d+)?/);return m?parseFloat(m[0]):null}
+function discountPct(p){const r=priceNum(p.regular_price),s=priceNum(p.sale_price);return r&&s&&r>0&&s<r?Math.round((r-s)/r*100):0}
+
+function showToast(msg){
+  toastEl.textContent=msg;
+  toastEl.classList.add("show");
+  setTimeout(()=>toastEl.classList.remove("show"),2500);
+}
+
+function applyFilters(){
+  const term=search.value.trim().toLowerCase();
+  const siteName=site.value;
+  const minDisc=parseInt(discountSel.value)||0;
+  const maxP=maxPrice.value?parseFloat(maxPrice.value):Infinity;
+  const sort=sortSel.value;
+
+  filtered=products.filter(p=>{
+    const d=discountPct(p);
+    const sale=priceNum(p.sale_price);
+    const hasPrice = sale !== null;
+    return (
+      (!term||(p.name||"").toLowerCase().includes(term))&&
+      (!siteName||p.website===siteName)&&
+      (!minDisc||d>=minDisc)&&
+      (hasPrice? sale<=maxP : true)
+    );
+  });
+
+  filtered.sort((a,b)=>{
+    if(sort==="discount"){
+      const da=discountPct(a),db=discountPct(b);
+      if(da!==db)return db-da;
+      return 0;
+    }
+    if(sort==="price-asc") return (priceNum(a.sale_price)||0)-(priceNum(b.sale_price)||0);
+    if(sort==="price-desc") return (priceNum(b.sale_price)||0)-(priceNum(a.sale_price)||0);
+    if(sort==="newest"){
+      const ta=new Date(a.timestamp||0),tb=new Date(b.timestamp||0);
+      return tb-ta;
+    }
+    return 0;
+  });
+
+  page=0;
+  renderPage();
+}
+
+function renderPage(){
+  const end=(page+1)*PAGE_SIZE;
+  const slice=filtered.slice(0,end);
+
+  grid.innerHTML="";
+  if(slice.length===0){
+    grid.innerHTML=products.length===0
+      ? `<div class="empty"><h2>No products available</h2><p>The stores haven't been scraped yet.</p><button class="primary small" onclick="loadData(true)">Reload</button></div>`
+      : `<div class="empty"><h2>No matching products</h2><p>Try adjusting your search or filters.</p><button class="primary small" onclick="clearFilters()">Clear filters</button></div>`;
+    countEl.textContent=products.length===0?"No products available":`0 of ${filtered.length} matching (${products.length} total)`;
+    loadMoreWrap.style.display="none";
+    return;
+  }
+
+  for(const p of slice){
+    const d=discountPct(p);
+    const href=safeUrl(p.url);
+    const img=safeUrl(p.image_url);
+    const card=document.createElement("article");
+    card.className="card";
+    card.innerHTML=`
+      ${img?`<img class="card-img" src="${esc(img)}" alt="${esc(p.name)}" loading="lazy"
+           width="300" height="200"
+           onerror="this.onerror=null;this.src='${NO_IMAGE}'">`
+           :`<div class="card-img" role="img" aria-label="No image available"></div>`}
+      <div class="card-body">
+        <div class="store-tag">${esc(p.website)}</div>
+        <div class="title">${esc(p.name)}</div>
+        <div class="price-row">
+          ${d?`<span class="sale">${esc(p.sale_price||"N/A")}</span><span class="was">${esc(p.regular_price||"N/A")}</span>`:`<span class="sale">${esc(p.sale_price||"N/A")}</span>`}
+          ${d?`<span class="badge">${d}% off</span>`:""}
+        </div>
+        ${href?`<a class="view" href="${esc(href)}" target="_blank" rel="noopener noreferrer">View product &rarr;</a>`:""}
+      </div>`;
+    grid.appendChild(card);
+  }
+
+  const showing=slice.length;
+  const hasMore=end<filtered.length;
+  countEl.textContent=`${showing} of ${filtered.length} matching (${products.length} total)`;
+  loadMoreWrap.style.display=hasMore?"block":"none";
+  loadMoreBtn.disabled=!hasMore;
+  loadMoreBtn.textContent=hasMore?"Load more products":"All products shown";
+
+  const when=metaEl.dataset.fetchedAt?new Date(parseInt(metaEl.dataset.fetchedAt)*1000).toLocaleTimeString():"";
+  const storeCount=metaEl.dataset.stores||"0";
+  statusEl.textContent=`Scraped at ${when} — ${products.length} products across ${storeCount} store(s).`;
+}
+
+function loadMore(){
+  if(isLoading||loadMoreScheduled||page*PAGE_SIZE>=filtered.length)return;
+  loadMoreScheduled=true;
+  isLoading=true;
+  loadMoreBtn.disabled=true;
+  loadMoreBtn.classList.add("loading");
+  setTimeout(()=>{
+    page++;
+    renderPage();
+    isLoading=false;
+    loadMoreBtn.disabled=false;
+    loadMoreBtn.classList.remove("loading");
+    loadMoreScheduled=false;
+  },60);
+}
+
+function clearFilters(){
+  search.value="";
+  site.value="";
+  discountSel.value="";
+  maxPrice.value="";
+  sortSel.value="featured";
+  applyFilters();
+}
+
+// ---------- infinite scroll ----------
+const io=new IntersectionObserver((entries)=>{
+  if(entries[0].isIntersecting) loadMore();
+},{rootMargin:"300px"});
+io.observe(sentinel);
+
+// ---------- data loading ----------
+async function loadData(force=false){
+  if(isLoading) return;
+  isLoading=true;
+  page=0;
+  filtered=[];
+  products=[];
+  refreshBtn.disabled=true;
+  loadMoreBtn.disabled=true;
+  grid.innerHTML="";
+  for(let i=0;i<PAGE_SIZE;i++) grid.appendChild(createSkeleton());
+  metaEl.textContent=force?"Refreshing data from all stores…":"Loading products…";
+  statusEl.textContent="";
+  countEl.textContent="";
+
+  try{
+    const res=await fetch(API+(force?"?refresh=1":""));
+    if(!res.ok)throw new Error("HTTP "+res.status);
+    const data=await res.json();
+    products=data.products||[];
+    metaEl.dataset.fetchedAt=data.fetched_at||0;
+    metaEl.dataset.stores=(data.stores||[]).length||"0";
+    updateStores(data.stores||[]);
+    applyFilters();
+    const when=data.fetched_at?new Date(data.fetched_at*1000).toLocaleTimeString():"";
+    metaEl.textContent=`Latest data scraped at ${when} — ${products.length} products across ${(data.stores||[]).length} store(s).`;
+    showToast(`Loaded ${products.length} products from ${(data.stores||[]).length} stores`);
+  }catch(e){
+    statusEl.textContent="Failed to load products: "+e.message;
+    metaEl.textContent="";
+    grid.innerHTML='<div class="empty"><h2>Load failed</h2><p>'+esc(e.message)+'</p><button class="primary small" onclick="loadData(true)">Try again</button></div>';
+  }finally{
+    isLoading=false;
+    refreshBtn.disabled=false;
+    loadMoreBtn.disabled=false;
+  }
+}
+
+function createSkeleton(){
+  const el=document.createElement("div");
+  el.className="skeleton-card";
+  el.innerHTML=`
+    <div class="skeleton-img"></div>
+    <div class="skeleton-body">
+      <div class="skeleton-line" style="width:90%"></div>
+      <div class="skeleton-line short"></div>
+      <div class="skeleton-line" style="width:70%"></div>
+    </div>`;
+  return el;
+}
+
+function updateStores(stores){
+  const names=[...new Set(stores.map(s=>s.name).filter(Boolean))].sort();
+  site.innerHTML='<option value="">All stores</option>'+names.map(n=>`<option>${esc(n)}</option>`).join('');
+}
+
+// ---------- wiring ----------
+search.addEventListener("input",applyFilters);
+site.addEventListener("change",applyFilters);
+discountSel.addEventListener("change",applyFilters);
+maxPrice.addEventListener("input",applyFilters);
+sortSel.addEventListener("change",applyFilters);
+refreshBtn.addEventListener("click",()=>loadData(true));
+loadMoreBtn.addEventListener("click",loadMore);
+
+// kick off
+loadData(false);
+</script>
+</body>
+</html>

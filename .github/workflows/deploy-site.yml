@@ -1,0 +1,70 @@
+# Builds the static site and deploys it to GitHub Pages.
+#
+# Runs on a schedule so the product data stays fresh without any server: the
+# scraper runs here, writes site/products.json, and Pages serves the result.
+# It also runs on pushes that touch the site, and manually on demand.
+
+name: Build and deploy site
+
+on:
+  schedule:
+    # Every 6 hours. GitHub may delay cron runs slightly under load.
+    - cron: "17 */6 * * *"
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - "src/**"
+      - "scripts/build_site.py"
+      - ".github/workflows/deploy-site.yml"
+
+# Never let two deploys race: finish the in-flight one, then run the newest.
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install package
+        run: pip install .
+
+      - name: Build site (scrape all stores)
+        run: python scripts/build_site.py site
+
+      - name: Verify build output
+        run: |
+          test -s site/index.html || { echo "index.html missing"; exit 1; }
+          test -s site/products.json || { echo "products.json missing"; exit 1; }
+          python -c "import json,sys; d=json.load(open('site/products.json')); print(f\"{d['count']} products from {len(d['stores'])} stores\"); sys.exit(0 if d['count'] >= 50 else 1)"
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: site
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

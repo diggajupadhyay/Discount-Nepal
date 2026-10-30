@@ -3,6 +3,7 @@
 ## [0.4.0] — 2026-10-30
 
 ### Added
+*   **SEO & link previews** — Open Graph image (`assets/og.png`, 1200×630, rendered from `assets/og-card.html`), full `og:*` tags, Twitter/X `summary_large_image` card tags, canonical URL, `theme-color`, and JSON-LD `WebSite` structured data. Shared links now show a logo card with title and description on WhatsApp, X, Discord, Facebook, Slack, etc.
 *   **GitHub Pages hosting** — the app is now a hosted static site: a scheduled GitHub Action (`deploy-site.yml`) scrapes all stores every 6 hours and deploys the result. Visit <https://diggajupadhyay.github.io/Discount-Nepal/> with no install.
 *   `scripts/build_site.py` — static site build (`site/index.html` + `site/products.json`) with a minimum-product guard so partial scrapes are never published.
 *   `ci.yml` workflow — ruff, mypy and pytest run on every push and pull request.

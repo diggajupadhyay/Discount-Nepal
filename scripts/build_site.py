@@ -4,6 +4,7 @@ Scrapes every enabled store and writes:
 
     site/index.html       the frontend (copied from the package template)
     site/products.json    {products, fetched_at, stores, count}
+    site/assets/og.png    Open Graph share image (copied from ./assets)
 
 The frontend fetches ``products.json`` relative to itself, so the same
 template works both here (static hosting) and under the local dev server,
@@ -28,6 +29,7 @@ from discount_nepal.app import scrape_all_stores
 from discount_nepal.registry import list_stores
 
 TEMPLATE = Path("src/discount_nepal/templates/index.html")
+ASSETS = Path("assets")
 
 # Refuse to publish a suspiciously small result: a partial scrape (e.g. most
 # stores unreachable) should not replace good data on the live site.
@@ -66,6 +68,9 @@ def main() -> int:
         json.dumps(payload, ensure_ascii=False), encoding="utf-8"
     )
     shutil.copyfile(TEMPLATE, out_dir / "index.html")
+    # Share image(s) referenced by og:image — must be served next to index.html.
+    if ASSETS.is_dir():
+        shutil.copytree(ASSETS, out_dir / "assets", dirs_exist_ok=True)
 
     size_kb = (out_dir / "products.json").stat().st_size / 1024
     stores = len({p["website"] for p in products})

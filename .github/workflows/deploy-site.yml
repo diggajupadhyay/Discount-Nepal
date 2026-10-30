@@ -15,6 +15,7 @@ on:
     branches: [main]
     paths:
       - "src/**"
+      - "assets/**"
       - "scripts/build_site.py"
       - ".github/workflows/deploy-site.yml"
 
@@ -51,6 +52,7 @@ jobs:
         run: |
           test -s site/index.html || { echo "index.html missing"; exit 1; }
           test -s site/products.json || { echo "products.json missing"; exit 1; }
+          test -s site/assets/og.png || { echo "share image missing"; exit 1; }
           python -c "import json,sys; d=json.load(open('site/products.json')); print(f\"{d['count']} products from {len(d['stores'])} stores\"); sys.exit(0 if d['count'] >= 50 else 1)"
 
       - name: Upload Pages artifact
